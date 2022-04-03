@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+              rel="stylesheet" 
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+              crossorigin="anonymous">
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+                crossorigin="anonymous"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <title>RouteDevices</title>
+
+        <style>
+            body{
+                overflow: hidden; 
+            }
+
+            .clickedArea{
+                display:none;
+                position: absolute;
+                background-color:darkred;
+                height: 20px;
+                width: 20px;
+                margin: 0 auto;
+            }
+            #map-img {
+                position:relative;
+            }
+            .map-title {
+                position:absolute;
+                color:darkred; 
+                font-weight: bold;
+                font-size: 25px;
+                cursor: pointer;
+            }
+
+            @media (max-width: 800px) {
+                .map-title {
+                    font-size: 15px;
+                }
+            }
+        </style>
+    </head>
+    
+    <script>
+        $( document ).ready(function() {
+
+            width = $(window).width();
+            height = $(window).height();
+
+            $("area").each(function() {
+                
+                var txt = $(this).attr('alt');
+                var textSize = txt.length * 15;
+                var pairs = $(this).attr("coords").split(', ');
+                for(var i=0; i<pairs.length; i++) {
+                    var nums = pairs[i].split(',');
+                    for(var j=0; j<nums.length; j++) {
+                        //original img have 1301 x 712
+                        if(i == 0 || i == 2){
+                            nums[j] = Math.floor(nums[j] * width / 1301);
+                        }
+                        else{
+                            nums[j] = Math.floor(nums[j] * height / 712);
+                        }
+                    }
+                    var leftTextCoor= Math.floor( ((nums[0] + nums[2]) / 2) - (textSize / 4 ));
+                    var topTextCoor= Math.floor((nums[1] + nums[3]) / 2);
+
+                    pairs[i] = nums.join(',');
+                }
+
+                $(this).attr("coords", pairs.join(', '));
+
+                console.log(txt);
+                console.log(leftTextCoor);
+                console.log(topTextCoor);
+
+                var span=$('<span class="map-title">'+txt+'</span>');        
+                span.css({top: topTextCoor+'px', left: leftTextCoor+'px', position:'absolute'});
+                span.appendTo($(this));
+            });
+
+            
+            $(".mapZone").click(function(){
+                alert($(this).attr("alt"));
+            });
+            
+        });
+    </script>
+
+
+    <body>
+        <div class="container">
+            <div class="row align-items-center justify-content-center mt-2">
+                <div class="col-2">Enrutame!</div>
+            </div>
+        </div>
+
+        <div id="map-img">
+            <img src="images/tmap.png" alt="mapa" style='width: 100%' usemap="#mapper">
+
+            <map id="mapper" name="mapper">
+                <area class="mapZone" href='#' shape="rect" alt="CurrentRoom" coords="13,14,510,241">
+                <area class="mapZone" href='#' shape="rect" alt="Destiniy1" coords="527,16,950,245">
+                <area class="mapZone" href='#' shape="rect" alt="Destiniy2" coords="961,16,1277,238">
+                <area class="mapZone" href='#' shape="rect" alt="Destiniy3" coords="1089,259,1285,406">
+            </map>
+
+        </div>
+
+        <div class="clickedArea container">
+            <div class="row">
+                <div class="col"> Destino </div>
+            </div>
+        </div>
+
+    </body>
+    
+
+</html>
