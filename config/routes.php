@@ -19,10 +19,9 @@ return function (App $app) {
         return $response->withHeader('Content-Type', FILEINFO_MIME_TYPE);
     });
     
-
     $app->get('/RegisterDeviceInRoute', \App\Action\RegisterDevice::class);
+    $app->post('/RegisterDevice', \App\Action\RegisterDeviceInRoute::class);
+
     $app->get('/GetNodes', \App\Action\GetNodeAction::class);
     $app->get('/MqttSubscriber', \App\Action\MqttSubscriber::class);
-
-    $app->post('/RegisterDeviceInRoute', \App\Action\RegisterDeviceInRoute::class);
 };
