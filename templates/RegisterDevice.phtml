@@ -20,30 +20,173 @@
 
         <style>
             body{
-                overflow: hidden; 
+                overflow: hidden;
+                margin:0;
+                padding:0;
+                background-color:#2a2e30;
             }
 
-            .clickedArea{
-                display:none;
-                position: absolute;
-                background-color:darkred;
-                height: 20px;
-                width: 20px;
-                margin: 0 auto;
+            .leFont{
+                font-family:sans-serif;
+                font-size:25px;
+                color:#ddd000;
+                letter-spacing:2px;
+                padding: 0 4px;
+                text-transform:uppercase;
+                text-shadow:0 0 10px #ddd000;
+                border-radius: 6px;
+                box-shadow:0 0 20px rgba(30,30,30,.5);
             }
+
+            #formContainer{
+                display:none;
+                height: 95%;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                border : 3px solid black;
+                border-radius: 8px;
+                background-color:#2a2e30;
+            }
+
+            #registerMobile{
+                position:absolute;
+                top: 50%;
+                left: 50%;
+                margin-top: -50px;
+                margin-left: -100px;
+                width: 200px;
+                height: 100px;
+                line-height:100px;
+                text-align: center;
+                cursor: pointer;
+                color: #ddd000;
+                border-radius: 8px;
+                box-shadow:0 0 20px #ddd000;
+            }
+
+            /** LOADER */
+
+            .ring {
+                display:none;
+                position:absolute;
+                top:50%;
+                left:50%;
+                transform:translate(-50%,-50%);
+                width:150px;
+                height:150px;
+                background:transparent;
+                border-radius:50%;
+                text-align:center;
+                line-height:150px;
+            }
+            .ring:after {
+                content:'';
+                position:absolute;
+                top:0px;
+                left:0px;
+                width:100%;
+                height:100%;
+                border:4px solid transparent;
+                border-top:5px solid #ddd000;
+                border-right:5px solid #ddd000;
+                border-radius:50%;
+                animation:animateC 2s linear infinite;
+            }
+            .ring>#lineLoader {
+                display:block;
+                position:absolute;
+                top:calc(50% - 2px);
+                left:50%;
+                width:50%;
+                height:4px;
+                background:transparent;
+                transform-origin:left;
+                animation:animate 2s linear infinite;
+            }
+            .ring>#lineLoader:after {
+                content:'';
+                position:absolute;
+                width:16px;
+                height:16px;
+                border-radius:50%;
+                background:#ddd000;
+                top:-6px;
+                right:-8px;
+                box-shadow:0 0 20px #ddd000;
+            }
+
+            .ring>#lineLoader.hidden{
+                display: none;
+            }
+            .ring.hidden:after {
+                display:none;
+            }
+            .ring.hidden {
+                box-shadow:0 0 20px #ddd000;
+            }
+
+            @keyframes animateC
+            {
+                0% { transform:rotate(0deg); }
+                100% { transform:rotate(360deg); } 
+            }
+            @keyframes animate
+            {
+                0% { transform:rotate(45deg); }
+                100% { transform:rotate(405deg); }
+            }
+
+            /** ARROW */
+            .arrow,
+            .arrow:before{
+                position: absolute;
+                left: 50%;
+            }
+
+            .arrow{
+                display: none;
+                width: 150px;
+                height: 150px;
+                top: 50%;
+                margin: -30px 0 0 -100px;
+                -webkit-transform: rotate(315deg);
+                border-left: none;
+                border-top: none;
+                border-right: 4px #ddd000 solid;
+                border-bottom: 4px #ddd000 solid;
+            }
+
+            
+            .arrow:before{
+                content: '';
+                width: 90px;
+                height: 90px;
+                top: 50%;
+                margin: -40px 0 0 -40px;
+                border-left: none;
+                border-top: none;
+                border-right: 2px #ddd000 solid;
+                border-bottom: 2px #ddd000 solid;
+                animation-duration: 3s;
+                animation-iteration-count: infinite;
+                animation-name: arrow;
+            }
+            
+            @keyframes arrow {
+                0% {opacity: 1}
+                100% {opacity: 0; transform: translate(-10px, -10px)}
+            }
+
+            /** MAP */
             #map-img {
                 position:relative;
             }
-            .map-title {
-                position:absolute;
-                color:darkred; 
-                font-weight: bold;
-                font-size: 25px;
-                cursor: pointer;
-            }
 
             @media (max-width: 800px) {
-                .map-title {
+                .leFont {
                     font-size: 15px;
                 }
             }
@@ -72,26 +215,53 @@
                             nums[j] = Math.floor(nums[j] * height / 712);
                         }
                     }
-                    var leftTextCoor= Math.floor( ((nums[0] + nums[2]) / 2) - (textSize / 4 ));
+                    var leftTextCoor= Math.floor( ((nums[0] + nums[2]) / 2) - (textSize / 3 ));
                     var topTextCoor= Math.floor((nums[1] + nums[3]) / 2);
 
                     pairs[i] = nums.join(',');
                 }
 
                 $(this).attr("coords", pairs.join(', '));
-
-                console.log(txt);
-                console.log(leftTextCoor);
-                console.log(topTextCoor);
-
-                var span=$('<span class="map-title">'+txt+'</span>');        
+                var span=$('<span class="leFont">'+txt+'</span>');        
                 span.css({top: topTextCoor+'px', left: leftTextCoor+'px', position:'absolute'});
                 span.appendTo($(this));
             });
+            
 
             
             $(".mapZone").click(function(){
-                alert($(this).attr("alt"));
+                $("#formContainer").show();
+                $("#routeDestiny").text($(this).attr("alt"));
+            });
+
+            $("#registerMobile").click(function(){
+                $(this).hide(function(){$(".ring").show();});
+                $.ajax({
+                    url: "RegisterDevice",
+                    headers: { "cache-control": "no-cache" },
+                    type: "POST",
+                    data: {destiny : $("#routeDestiny").text() },
+                    dataType: "json",
+                }).done(function(response){
+                    console.log(response);
+                    if(response.success){
+                        $("#lineLoader, .ring").addClass("hidden");
+                        $("#loaderText").text('Listo').promise().done(function(){
+                            setInterval(function () {
+                                $(".ring").hide(function(){
+                                    $(".arrow").show();
+                                }) 
+                            }, 2000);
+                        });
+                    }
+                    else{
+                        alert("Error al procesar la solicitud");
+                    }
+                })
+                .fail(function(response){ alert("Error en el servidor, no pudo procesarse la solicitud") })
+                .always(function(){ 
+                    //$(".ring").hide() 
+                });
             });
             
         });
@@ -109,18 +279,25 @@
             <img src="images/tmap.png" alt="mapa" style='width: 100%' usemap="#mapper">
 
             <map id="mapper" name="mapper">
-                <area class="mapZone" href='#' shape="rect" alt="CurrentRoom" coords="13,14,510,241">
-                <area class="mapZone" href='#' shape="rect" alt="Destiniy1" coords="527,16,950,245">
-                <area class="mapZone" href='#' shape="rect" alt="Destiniy2" coords="961,16,1277,238">
-                <area class="mapZone" href='#' shape="rect" alt="Destiniy3" coords="1089,259,1285,406">
+                <area class="mapZone" href='#' shape="rect" alt="Current" coords="13,14,510,241">
+                <area class="mapZone" href='#' shape="rect" alt="room 1" coords="527,16,950,245">
+                <area class="mapZone" href='#' shape="rect" alt="room 2" coords="961,16,1277,238">
+                <area class="mapZone" href='#' shape="rect" alt="room 3" coords="1089,259,1285,406">
             </map>
 
         </div>
 
-        <div class="clickedArea container">
-            <div class="row">
-                <div class="col"> Destino </div>
+        <div id="formContainer" class="container leFont">
+
+        <div class="ring leFont"><label id="loaderText">Scaning</label><span id="lineLoader"></span></div>
+        <div class="arrow"></div>
+
+            <div class="row align-items-center justify-content-center mt-4">
+                <div class="col-4">Destino: <span id="routeDestiny"><span></div>
             </div>
+            
+            <div id="registerMobile">LLEVAME</div>
+
         </div>
 
     </body>
