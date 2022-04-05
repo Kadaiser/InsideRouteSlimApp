@@ -3,7 +3,7 @@
 /coverage/
 /vendor/
 /logs/*
-/scripts/mac
+/scritps/mac
 !/logs/README.md
 .phpunit.result.cache
 .tkn
