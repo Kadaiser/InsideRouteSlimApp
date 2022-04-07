@@ -18,6 +18,20 @@ return function (App $app) {
         $response->getBody()->write($image);
         return $response->withHeader('Content-Type', FILEINFO_MIME_TYPE);
     });
+
+    //routing css
+    $app->get('/css/{data}', function($request, $response, $args) {    
+        $data = $args['data'];
+        $dir = dirname(__DIR__)."/resources/css/";
+        $css = @file_get_contents($dir.$data);
+        if($css === FALSE) {
+            $handler = $this->notFoundHandler;
+            return $handler($request, $response);    
+        }
+        $response->getBody()->write($css);
+        return $response->withHeader('Content-Type', 'text/css');
+    });
+
     
     $app->get('/RegisterDeviceInRoute', \App\Action\RegisterDevice::class);
     $app->post('/RegisterDevice', \App\Action\RegisterDeviceInRoute::class);
