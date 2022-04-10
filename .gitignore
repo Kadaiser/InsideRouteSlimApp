@@ -6,4 +6,5 @@
 /scritps/mac
 !/logs/README.md
 .phpunit.result.cache
+/config/access.php
 .tkn

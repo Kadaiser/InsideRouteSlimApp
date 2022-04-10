@@ -5,12 +5,15 @@ body{
     background-color:#2a2e30;
 }
 
+.main-cotainer{
+    padding-top: 10vmax;
+}
+
 .leFont{
     font-family:sans-serif;
     font-size:25px;
     color:#ddd000;
     letter-spacing:2px;
-    padding: 0 4px;
     text-transform:uppercase;
     text-shadow:0 0 10px #ddd000;
     border-radius: 6px;
@@ -41,12 +44,14 @@ body{
     background-color:#2a2e30;
 }
 
-#registerMobile{
+.leButton{
+    /*
     position:absolute;
     top: 50%;
     left: 50%;
     margin-top: -50px;
     margin-left: -100px;
+    */
     width: 200px;
     height: 100px;
     line-height:100px;
